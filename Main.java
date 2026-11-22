@@ -159,18 +159,18 @@ public class Main extends Application {
      * @return HBox container with formatted brand and status elements
      */
     private HBox createHeaderBanner() {
-        HBox header = new HBox(16);
+        HBox header = new HBox(14);
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(14, 24, 12, 24));
+        header.setPadding(new Insets(16, 24, 14, 24));
         header.setStyle("-fx-background-color: " + CARD_BG + ";");
 
         // Brand Icon / Emblem
         Label logoIcon = new Label("📦");
-        logoIcon.setFont(Font.font("Segoe UI Emoji", 24));
+        logoIcon.setFont(Font.font("Segoe UI Emoji", 26));
 
         VBox titleBox = new VBox(2);
         Label titleLabel = new Label("Store Inventory Management System");
-        titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 19));
+        titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 20));
         titleLabel.setTextFill(Color.web(TEXT_MAIN));
 
         Label subLabel = new Label("Real-time stock tracking, catalog control, and inventory analytics");
@@ -178,22 +178,7 @@ public class Main extends Application {
         subLabel.setTextFill(Color.web(TEXT_MUTED));
         titleBox.getChildren().addAll(titleLabel, subLabel);
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        // Clean System Online Badge (Light Theme Green Pill)
-        HBox statusPill = new HBox(7);
-        statusPill.setAlignment(Pos.CENTER);
-        statusPill.setPadding(new Insets(5, 12, 5, 12));
-        statusPill.setStyle("-fx-background-color: #ECFDF5; -fx-background-radius: 20; -fx-border-color: #A7F3D0; -fx-border-radius: 20;");
-
-        Circle dot = new Circle(3.5, Color.web("#059669"));
-        Label pillText = new Label("System Online");
-        pillText.setFont(Font.font("Segoe UI", FontWeight.BOLD, 11));
-        pillText.setTextFill(Color.web("#059669"));
-        statusPill.getChildren().addAll(dot, pillText);
-
-        header.getChildren().addAll(logoIcon, titleBox, spacer, statusPill);
+        header.getChildren().addAll(logoIcon, titleBox);
         return header;
     }
 
@@ -213,10 +198,10 @@ public class Main extends Application {
         lowStockKpiLabel = new Label("0");
         outOfStockKpiLabel = new Label("0");
 
-        VBox totalCard = createKpiCard("TOTAL INVENTORY", totalKpiLabel, PRIMARY_COLOR, "#EFF6FF");
-        VBox inStockCard = createKpiCard("IN STOCK", inStockKpiLabel, "#10B981", "#ECFDF5");
-        VBox lowStockCard = createKpiCard("LOW STOCK", lowStockKpiLabel, "#F59E0B", "#FFFBEB");
-        VBox outOfStockCard = createKpiCard("OUT OF STOCK", outOfStockKpiLabel, "#EF4444", "#FEF2F2");
+        VBox totalCard = createKpiCard("📦", "TOTAL INVENTORY", totalKpiLabel, PRIMARY_COLOR);
+        VBox inStockCard = createKpiCard("✅", "IN STOCK", inStockKpiLabel, "#10B981");
+        VBox lowStockCard = createKpiCard("⚠️", "LOW STOCK", lowStockKpiLabel, "#F59E0B");
+        VBox outOfStockCard = createKpiCard("🚫", "OUT OF STOCK", outOfStockKpiLabel, "#EF4444");
 
         HBox.setHgrow(totalCard, Priority.ALWAYS);
         HBox.setHgrow(inStockCard, Priority.ALWAYS);
@@ -228,15 +213,15 @@ public class Main extends Application {
     }
 
     /**
-     * Helper to render an individual light-themed metric card with a colored accent indicator.
+     * Helper to render an individual light-themed metric card with an icon and colored accent indicator.
      *
+     * @param icon       card emoji/symbol icon
      * @param title      card category header
      * @param valueLabel metric counter label
      * @param accentHex  accent brand color hex code
-     * @param iconBgHex  icon pill background hex code
      * @return configured VBox container
      */
-    private VBox createKpiCard(String title, Label valueLabel, String accentHex, String iconBgHex) {
+    private VBox createKpiCard(String icon, String title, Label valueLabel, String accentHex) {
         VBox card = new VBox(4);
         card.setAlignment(Pos.CENTER_LEFT);
         card.setPadding(new Insets(10, 16, 10, 16));
@@ -251,14 +236,16 @@ public class Main extends Application {
                 BORDER_COLOR, accentHex
         ));
 
-        HBox titleRow = new HBox(7);
+        HBox titleRow = new HBox(6);
         titleRow.setAlignment(Pos.CENTER_LEFT);
-        Circle indicator = new Circle(3.5, Color.web(accentHex));
+
+        Label iconLbl = new Label(icon);
+        iconLbl.setFont(Font.font("Segoe UI Emoji", 11));
 
         Label titleLbl = new Label(title);
         titleLbl.setFont(Font.font("Segoe UI", FontWeight.BOLD, 10.5));
         titleLbl.setTextFill(Color.web(TEXT_MUTED));
-        titleRow.getChildren().addAll(indicator, titleLbl);
+        titleRow.getChildren().addAll(iconLbl, titleLbl);
 
         valueLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 22));
         valueLabel.setTextFill(Color.web(TEXT_MAIN));
@@ -268,7 +255,7 @@ public class Main extends Application {
     }
 
     /**
-     * Constructs the left-hand form panel with primary-color-driven action controls.
+     * Constructs the left-hand form panel with primary-color-driven action controls and icons.
      *
      * @return VBox container representing the management form
      */
@@ -284,7 +271,7 @@ public class Main extends Application {
                 CARD_BG, BORDER_COLOR
         ));
 
-        Label formTitle = new Label("Item Details & Management");
+        Label formTitle = new Label("📝 Item Details & Management");
         formTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 15));
         formTitle.setTextFill(Color.web(TEXT_MAIN));
 
@@ -294,7 +281,7 @@ public class Main extends Application {
         formSubtitle.setTextFill(Color.web(TEXT_MUTED));
 
         // Name input
-        Label nameLbl = new Label("Item Name *");
+        Label nameLbl = new Label("🏷️ Item Name *");
         nameLbl.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 12));
         nameLbl.setTextFill(Color.web("#334155"));
         nameField = new TextField();
@@ -302,7 +289,7 @@ public class Main extends Application {
         nameField.setStyle("-fx-padding: 8 10; -fx-font-size: 13px; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-background-color: #FFFFFF;");
 
         // Quantity input
-        Label qtyLbl = new Label("Quantity (Units) *");
+        Label qtyLbl = new Label("🔢 Quantity (Units) *");
         qtyLbl.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 12));
         qtyLbl.setTextFill(Color.web("#334155"));
         quantityField = new TextField();
@@ -310,7 +297,7 @@ public class Main extends Application {
         quantityField.setStyle("-fx-padding: 8 10; -fx-font-size: 13px; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-background-color: #FFFFFF;");
 
         // Status Combo Box
-        Label statusLbl = new Label("Stock Status");
+        Label statusLbl = new Label("📊 Stock Status");
         statusLbl.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 12));
         statusLbl.setTextFill(Color.web("#334155"));
         statusCombo = new ComboBox<>();
@@ -326,8 +313,8 @@ public class Main extends Application {
         feedbackBanner.setPadding(new Insets(8, 12, 8, 12));
         feedbackBanner.setStyle("-fx-background-color: #F8FAFC; -fx-text-fill: #475569; -fx-background-radius: 6; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-font-size: 11.5px;");
 
-        // Primary Color Driven Action Buttons
-        Button addBtn = new Button("Add Item");
+        // Primary Color Driven Action Buttons with Icons
+        Button addBtn = new Button("➕ Add Item");
         addBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12.5px; -fx-padding: 9 14; -fx-background-radius: 6; -fx-cursor: hand;",
                 PRIMARY_COLOR
@@ -335,21 +322,21 @@ public class Main extends Application {
         addBtn.setMaxWidth(Double.MAX_VALUE);
         addBtn.setOnAction(e -> handleAddItem());
 
-        Button updateBtn = new Button("Update Selected");
+        Button updateBtn = new Button("✏️ Update Selected");
         updateBtn.setStyle(
                 "-fx-background-color: #0284C7; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12.5px; -fx-padding: 9 14; -fx-background-radius: 6; -fx-cursor: hand;"
         );
         updateBtn.setMaxWidth(Double.MAX_VALUE);
         updateBtn.setOnAction(e -> handleUpdateItem());
 
-        Button deleteBtn = new Button("Delete Item");
+        Button deleteBtn = new Button("🗑️ Delete Item");
         deleteBtn.setStyle(
                 "-fx-background-color: #FEE2E2; -fx-text-fill: #DC2626; -fx-border-color: #FECACA; -fx-border-radius: 6; -fx-font-weight: bold; -fx-font-size: 12.5px; -fx-padding: 9 14; -fx-background-radius: 6; -fx-cursor: hand;"
         );
         deleteBtn.setMaxWidth(Double.MAX_VALUE);
         deleteBtn.setOnAction(e -> handleDeleteItem());
 
-        Button clearBtn = new Button("Clear Form");
+        Button clearBtn = new Button("🔄 Clear Form");
         clearBtn.setStyle(
                 "-fx-background-color: #F8FAFC; -fx-text-fill: #64748B; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-font-weight: bold; -fx-font-size: 12.5px; -fx-padding: 9 14; -fx-background-radius: 6; -fx-cursor: hand;"
         );
@@ -373,15 +360,15 @@ public class Main extends Application {
         Separator sep = new Separator();
         sep.setStyle("-fx-background-color: #E2E8F0;");
 
-        // Utility Row
+        // Utility Row with Icons
         HBox auxBox = new HBox(8);
-        Button sampleBtn = new Button("Load Sample Catalog");
+        Button sampleBtn = new Button("📂 Load Sample Catalog");
         sampleBtn.setStyle("-fx-background-color: #F1F5F9; -fx-text-fill: #334155; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 7 10; -fx-background-radius: 6; -fx-cursor: hand;");
         sampleBtn.setOnAction(e -> loadSampleCatalog());
         HBox.setHgrow(sampleBtn, Priority.ALWAYS);
         sampleBtn.setMaxWidth(Double.MAX_VALUE);
 
-        Button clearAllBtn = new Button("Clear All");
+        Button clearAllBtn = new Button("🧹 Clear All");
         clearAllBtn.setStyle("-fx-background-color: #FFF1F2; -fx-text-fill: #BE123C; -fx-border-color: #FFE4E6; -fx-border-radius: 6; -fx-font-size: 11.5px; -fx-font-weight: bold; -fx-padding: 7 10; -fx-background-radius: 6; -fx-cursor: hand;");
         clearAllBtn.setOnAction(e -> handleClearInventory());
         HBox.setHgrow(clearAllBtn, Priority.ALWAYS);
@@ -420,11 +407,11 @@ public class Main extends Application {
                 CARD_BG, BORDER_COLOR
         ));
 
-        // Top Toolbar: Search + Modern Styled Segmented View Switcher
+        // Top Toolbar: Search + Modern Styled Segmented View Switcher with Icons
         HBox topBar = new HBox(12);
         topBar.setAlignment(Pos.CENTER_LEFT);
 
-        Label searchLbl = new Label("Search:");
+        Label searchLbl = new Label("🔍 Search:");
         searchLbl.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 12));
         searchLbl.setTextFill(Color.web("#334155"));
 
@@ -434,17 +421,17 @@ public class Main extends Application {
         HBox.setHgrow(searchField, Priority.ALWAYS);
         searchField.textProperty().addListener((obs, oldVal, newVal) -> filterTable(newVal));
 
-        Button resetSearchBtn = new Button("Clear");
+        Button resetSearchBtn = new Button("✕ Clear");
         resetSearchBtn.setStyle("-fx-background-color: #F1F5F9; -fx-text-fill: #475569; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-font-size: 11.5px; -fx-padding: 6 12; -fx-background-radius: 6; -fx-cursor: hand;");
         resetSearchBtn.setOnAction(e -> searchField.clear());
 
-        // Custom Styled Segmented View Switcher (Connected Pill Design)
+        // Custom Styled Segmented View Switcher with Icons
         HBox segmentedControl = new HBox(0);
         segmentedControl.setAlignment(Pos.CENTER);
         segmentedControl.setStyle("-fx-background-color: #F1F5F9; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-padding: 2;");
 
-        tableSegmentBtn = new Button("Catalog Table");
-        csvSegmentBtn = new Button("CSV Data");
+        tableSegmentBtn = new Button("📋 Catalog Table");
+        csvSegmentBtn = new Button("📄 CSV Data");
 
         applySegmentStyle(tableSegmentBtn, true, true);
         applySegmentStyle(csvSegmentBtn, false, false);
@@ -463,18 +450,18 @@ public class Main extends Application {
         VBox.setVgrow(inventoryTable, Priority.ALWAYS);
 
         // Column 1: Item Name
-        TableColumn<InventoryItem, String> nameCol = new TableColumn<>("Item Name");
+        TableColumn<InventoryItem, String> nameCol = new TableColumn<>("🏷️ Item Name");
         nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         nameCol.setMinWidth(220);
 
         // Column 2: Quantity
-        TableColumn<InventoryItem, Integer> qtyCol = new TableColumn<>("Quantity");
+        TableColumn<InventoryItem, Integer> qtyCol = new TableColumn<>("🔢 Quantity");
         qtyCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity()).asObject());
         qtyCol.setMinWidth(90);
         qtyCol.setStyle("-fx-alignment: CENTER;");
 
         // Column 3: Stock Status (with stylized colored badge)
-        TableColumn<InventoryItem, String> statusCol = new TableColumn<>("Stock Status");
+        TableColumn<InventoryItem, String> statusCol = new TableColumn<>("📊 Stock Status");
         statusCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus()));
         statusCol.setMinWidth(130);
         statusCol.setStyle("-fx-alignment: CENTER;");
@@ -486,7 +473,9 @@ public class Main extends Application {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    Label badge = new Label(itemStatus);
+                    String icon = InventoryItem.IN_STOCK.equalsIgnoreCase(itemStatus) ? "✅ " :
+                            (InventoryItem.LOW_STOCK.equalsIgnoreCase(itemStatus) ? "⚠️ " : "🚫 ");
+                    Label badge = new Label(icon + itemStatus);
                     badge.setFont(Font.font("Segoe UI", FontWeight.BOLD, 11));
                     badge.setPadding(new Insets(3, 10, 3, 10));
                     if (InventoryItem.IN_STOCK.equalsIgnoreCase(itemStatus)) {
@@ -504,7 +493,7 @@ public class Main extends Application {
         });
 
         // Column 4: Quick Stock Adjust Actions
-        TableColumn<InventoryItem, Void> actionCol = new TableColumn<>("Quick Adjust");
+        TableColumn<InventoryItem, Void> actionCol = new TableColumn<>("⚡ Quick Adjust");
         actionCol.setMinWidth(110);
         actionCol.setStyle("-fx-alignment: CENTER;");
         actionCol.setCellFactory(col -> new TableCell<InventoryItem, Void>() {
@@ -563,7 +552,7 @@ public class Main extends Application {
             }
         });
 
-        // Build CSV View Container
+        // Build CSV View Container with Icon
         csvViewContainer = new VBox(10);
         VBox.setVgrow(csvViewContainer, Priority.ALWAYS);
         csvViewContainer.setVisible(false);
@@ -578,7 +567,7 @@ public class Main extends Application {
         Region csvSpacer = new Region();
         HBox.setHgrow(csvSpacer, Priority.ALWAYS);
 
-        Button copyCsvBtn = new Button("Copy to Clipboard");
+        Button copyCsvBtn = new Button("📋 Copy to Clipboard");
         copyCsvBtn.setStyle("-fx-background-color: #F1F5F9; -fx-text-fill: #334155; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-font-size: 11.5px; -fx-padding: 5 12; -fx-background-radius: 6; -fx-cursor: hand;");
         copyCsvBtn.setOnAction(e -> {
             ClipboardContent content = new ClipboardContent();
@@ -659,7 +648,7 @@ public class Main extends Application {
         footer.setAlignment(Pos.CENTER_LEFT);
         footer.setStyle("-fx-background-color: " + CARD_BG + "; -fx-border-color: " + BORDER_COLOR + "; -fx-border-width: 1 0 0 0;");
 
-        Label statusInfo = new Label("System Status: Online | Database Ready");
+        Label statusInfo = new Label("Database Connected | Ready");
         statusInfo.setFont(Font.font("Segoe UI", 11.5));
         statusInfo.setTextFill(Color.web(TEXT_MUTED));
 

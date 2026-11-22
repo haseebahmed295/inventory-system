@@ -94,24 +94,19 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
     draw.ellipse([width - 36, 16 - 5, width - 26, 16 + 5], fill=(203, 213, 225))
     draw.ellipse([width - 18, 16 - 5, width - 8, 16 + 5], fill=(239, 68, 68))
 
-    # Header Section (Clean White Header)
+    # Header Section (Clean Pure White Header)
     draw.rectangle([0, 32, width, 84], fill=(255, 255, 255))
     draw.text((24, 40), "📦 Store Inventory Management System", fill=(15, 23, 42), font=title_font)
     draw.text((58, 64), "Real-time stock tracking, catalog control, and inventory analytics", fill=(100, 116, 139), font=small_font)
-
-    # Header Badge (System Online Light Green Pill)
-    draw_rounded_rect(draw, [width - 146, 46, width - 24, 70], fill=(236, 253, 245), outline=(167, 243, 208), radius=12)
-    draw.ellipse([width - 134, 58 - 3, width - 128, 58 + 3], fill=(5, 150, 105))
-    draw.text((width - 120, 52), "System Online", fill=(5, 150, 105), font=small_font)
 
     # KPI Row (Seamless Light Theme Cards with Left Accent Borders)
     kpi_y = 92
     kpi_w = (width - 48 - 36) // 4
     kpi_configs = [
-        ("TOTAL INVENTORY", str(kpi_counts['total']), (37, 99, 235)),
-        ("IN STOCK", str(kpi_counts['in_stock']), (16, 185, 129)),
-        ("LOW STOCK", str(kpi_counts['low_stock']), (245, 158, 11)),
-        ("OUT OF STOCK", str(kpi_counts['out_stock']), (239, 68, 68))
+        ("📊 TOTAL ITEMS", str(kpi_counts['total']), (37, 99, 235)),
+        ("✅ IN STOCK", str(kpi_counts['in_stock']), (16, 185, 129)),
+        ("⚠️ LOW STOCK", str(kpi_counts['low_stock']), (245, 158, 11)),
+        ("🚫 OUT OF STOCK", str(kpi_counts['out_stock']), (239, 68, 68))
     ]
 
     for idx, (ktitle, kval, accent_col) in enumerate(kpi_configs):
@@ -120,11 +115,10 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
         draw_rounded_rect(draw, [kx, kpi_y, kx + kpi_w, kpi_y + 44], fill=(255, 255, 255), outline=(226, 232, 240), width=1, radius=6)
         # Left accent stripe
         draw.rectangle([kx, kpi_y, kx + 4, kpi_y + 44], fill=accent_col)
-        # Dot and label
-        draw.ellipse([kx + 12, kpi_y + 12 - 3, kx + 18, kpi_y + 12 + 3], fill=accent_col)
-        draw.text((kx + 24, kpi_y + 6), ktitle, fill=(100, 116, 139), font=small_font)
+        # Icon & Title
+        draw.text((kx + 14, kpi_y + 6), ktitle, fill=(100, 116, 139), font=small_font)
         # Bold Value
-        draw.text((kx + 24, kpi_y + 20), kval, fill=(15, 23, 42), font=sans_bold)
+        draw.text((kx + 14, kpi_y + 20), kval, fill=(15, 23, 42), font=sans_bold)
 
     # Divider below top strip
     draw.line([(0, 144), (width, 144)], fill=(226, 232, 240), width=1)
@@ -136,24 +130,24 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
 
     # Left Form Card
     draw_rounded_rect(draw, [24, body_y, 24 + form_w, body_y + form_h], fill=(255, 255, 255), outline=(226, 232, 240), radius=8)
-    draw.text((40, body_y + 14), "Item Details & Management", fill=(15, 23, 42), font=sans_bold)
+    draw.text((40, body_y + 14), "📝 Item Details & Management", fill=(15, 23, 42), font=sans_bold)
     draw.text((40, body_y + 34), "Add new merchandise or select an item to modify.", fill=(100, 116, 139), font=small_font)
 
     # Form Fields
     fy = body_y + 60
-    draw.text((40, fy), "Item Name *", fill=(51, 65, 85), font=sans_bold)
+    draw.text((40, fy), "🏷️ Item Name *", fill=(51, 65, 85), font=sans_bold)
     fy += 18
     draw_rounded_rect(draw, [40, fy, 24 + form_w - 16, fy + 32], fill=(255, 255, 255), outline=(203, 213, 225), radius=6)
     draw.text((48, fy + 7), form_values.get('name', ''), fill=(15, 23, 42) if form_values.get('name') else (148, 163, 184), font=sans_font)
 
     fy += 44
-    draw.text((40, fy), "Quantity (Units) *", fill=(51, 65, 85), font=sans_bold)
+    draw.text((40, fy), "🔢 Quantity (Units) *", fill=(51, 65, 85), font=sans_bold)
     fy += 18
     draw_rounded_rect(draw, [40, fy, 24 + form_w - 16, fy + 32], fill=(255, 255, 255), outline=(203, 213, 225), radius=6)
     draw.text((48, fy + 7), str(form_values.get('quantity', '')), fill=(15, 23, 42) if form_values.get('quantity') != '' else (148, 163, 184), font=sans_font)
 
     fy += 44
-    draw.text((40, fy), "Stock Status", fill=(51, 65, 85), font=sans_bold)
+    draw.text((40, fy), "📊 Stock Status", fill=(51, 65, 85), font=sans_bold)
     fy += 18
     draw_rounded_rect(draw, [40, fy, 24 + form_w - 16, fy + 32], fill=(255, 255, 255), outline=(203, 213, 225), radius=6)
     draw.text((48, fy + 7), form_values.get('status', 'Auto-Calculate (from Qty)'), fill=(15, 23, 42), font=sans_font)
@@ -171,30 +165,30 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
     bw = (form_w - 40) // 2
     # Add Item (Primary Blue)
     draw_rounded_rect(draw, [40, fy, 40 + bw - 6, fy + 32], fill=(37, 99, 235), radius=6)
-    draw.text((40 + bw//2 - 28, fy + 8), "+ Add Item", fill=(255, 255, 255), font=sans_bold)
+    draw.text((40 + 26, fy + 8), "➕ Add Item", fill=(255, 255, 255), font=sans_bold)
 
-    # Update Selected (Sky Blue)
+    # Update Selected (Action Blue)
     draw_rounded_rect(draw, [40 + bw + 4, fy, 40 + bw*2 - 2, fy + 32], fill=(2, 132, 199), radius=6)
-    draw.text((40 + bw + bw//2 - 38, fy + 8), "✎ Update Item", fill=(255, 255, 255), font=sans_bold)
+    draw.text((40 + bw + 14, fy + 8), "✏️ Update Selected", fill=(255, 255, 255), font=sans_bold)
 
     fy += 38
     # Delete Item (Danger Soft Red)
     draw_rounded_rect(draw, [40, fy, 40 + bw - 6, fy + 32], fill=(254, 226, 226), outline=(254, 202, 202), radius=6)
-    draw.text((40 + bw//2 - 32, fy + 8), "🗑 Delete Item", fill=(220, 38, 38), font=sans_bold)
+    draw.text((40 + 24, fy + 8), "🗑️ Delete Item", fill=(220, 38, 38), font=sans_bold)
 
     # Clear Form (Neutral Outline)
     draw_rounded_rect(draw, [40 + bw + 4, fy, 40 + bw*2 - 2, fy + 32], fill=(248, 250, 252), outline=(203, 213, 225), radius=6)
-    draw.text((40 + bw + bw//2 - 30, fy + 8), "↺ Clear Form", fill=(100, 116, 139), font=sans_bold)
+    draw.text((40 + bw + 24, fy + 8), "🧹 Clear Form", fill=(100, 116, 139), font=sans_bold)
 
     fy += 44
     draw.line([(40, fy), (24 + form_w - 16, fy)], fill=(226, 232, 240), width=1)
 
     fy += 12
     draw_rounded_rect(draw, [40, fy, 40 + bw - 6, fy + 26], fill=(241, 245, 249), outline=(203, 213, 225), radius=6)
-    draw.text((40 + 10, fy + 5), "⚡ Load Sample Catalog", fill=(51, 65, 85), font=small_font)
+    draw.text((40 + 8, fy + 5), "📂 Load Sample Catalog", fill=(51, 65, 85), font=small_font)
 
     draw_rounded_rect(draw, [40 + bw + 4, fy, 40 + bw*2 - 2, fy + 26], fill=(255, 241, 242), outline=(255, 228, 230), radius=6)
-    draw.text((40 + bw + 22, fy + 5), "Clear All", fill=(190, 18, 60), font=small_font)
+    draw.text((40 + bw + 28, fy + 5), "✕ Clear All", fill=(190, 18, 60), font=small_font)
 
     # Right Table Card
     tbl_x = 24 + form_w + 16
@@ -202,29 +196,29 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
     draw_rounded_rect(draw, [tbl_x, body_y, tbl_x + tbl_w, body_y + form_h], fill=(255, 255, 255), outline=(226, 232, 240), radius=8)
 
     # Search Bar & Segmented View Switcher
-    draw.text((tbl_x + 16, body_y + 16), "Search:", fill=(51, 65, 85), font=sans_bold)
-    draw_rounded_rect(draw, [tbl_x + 68, body_y + 10, tbl_x + tbl_w - 240, body_y + 36], fill=(255, 255, 255), outline=(203, 213, 225), radius=6)
-    draw.text((tbl_x + 76, body_y + 15), search_query if search_query else "Filter items by name in real-time...", fill=(15, 23, 42) if search_query else (148, 163, 184), font=small_font)
+    draw.text((tbl_x + 16, body_y + 16), "🔍 Search:", fill=(51, 65, 85), font=sans_bold)
+    draw_rounded_rect(draw, [tbl_x + 78, body_y + 10, tbl_x + tbl_w - 264, body_y + 36], fill=(255, 255, 255), outline=(203, 213, 225), radius=6)
+    draw.text((tbl_x + 86, body_y + 15), search_query if search_query else "Filter items by name in real-time...", fill=(15, 23, 42) if search_query else (148, 163, 184), font=small_font)
 
-    draw_rounded_rect(draw, [tbl_x + tbl_w - 232, body_y + 10, tbl_x + tbl_w - 180, body_y + 36], fill=(241, 245, 249), outline=(203, 213, 225), radius=6)
-    draw.text((tbl_x + tbl_w - 218, body_y + 15), "Clear", fill=(71, 85, 105), font=small_font)
+    draw_rounded_rect(draw, [tbl_x + tbl_w - 256, body_y + 10, tbl_x + tbl_w - 204, body_y + 36], fill=(241, 245, 249), outline=(203, 213, 225), radius=6)
+    draw.text((tbl_x + tbl_w - 248, body_y + 15), "✕ Clear", fill=(71, 85, 105), font=small_font)
 
-    # Segmented Toggle Pill [ Catalog Table | CSV Data ]
-    seg_x = tbl_x + tbl_w - 170
+    # Segmented Toggle Pill [ 📋 Catalog Table | 📄 CSV Data ]
+    seg_x = tbl_x + tbl_w - 194
     draw_rounded_rect(draw, [seg_x, body_y + 10, tbl_x + tbl_w - 16, body_y + 36], fill=(241, 245, 249), outline=(203, 213, 225), radius=6)
     # Active Table Segment
-    draw_rounded_rect(draw, [seg_x + 2, body_y + 12, seg_x + 84, body_y + 34], fill=(37, 99, 235), radius=4)
-    draw.text((seg_x + 8, body_y + 15), "Catalog Table", fill=(255, 255, 255), font=small_font)
-    draw.text((seg_x + 94, body_y + 15), "CSV Data", fill=(71, 85, 105), font=small_font)
+    draw_rounded_rect(draw, [seg_x + 2, body_y + 12, seg_x + 92, body_y + 34], fill=(37, 99, 235), radius=4)
+    draw.text((seg_x + 6, body_y + 15), "📋 Catalog Table", fill=(255, 255, 255), font=small_font)
+    draw.text((seg_x + 98, body_y + 15), "📄 CSV View", fill=(71, 85, 105), font=small_font)
 
     # Table Header
     ty = body_y + 48
     draw.rectangle([tbl_x + 16, ty, tbl_x + tbl_w - 16, ty + 28], fill=(248, 250, 252))
     draw.line([(tbl_x + 16, ty + 28), (tbl_x + tbl_w - 16, ty + 28)], fill=(226, 232, 240), width=1)
-    draw.text((tbl_x + 24, ty + 6), "Item Name", fill=(71, 85, 105), font=sans_bold)
-    draw.text((tbl_x + tbl_w - 280, ty + 6), "Quantity", fill=(71, 85, 105), font=sans_bold)
-    draw.text((tbl_x + tbl_w - 190, ty + 6), "Stock Status", fill=(71, 85, 105), font=sans_bold)
-    draw.text((tbl_x + tbl_w - 90, ty + 6), "Quick Adjust", fill=(71, 85, 105), font=sans_bold)
+    draw.text((tbl_x + 24, ty + 6), "🏷️ Item Name", fill=(71, 85, 105), font=sans_bold)
+    draw.text((tbl_x + tbl_w - 280, ty + 6), "🔢 Quantity", fill=(71, 85, 105), font=sans_bold)
+    draw.text((tbl_x + tbl_w - 195, ty + 6), "📊 Stock Status", fill=(71, 85, 105), font=sans_bold)
+    draw.text((tbl_x + tbl_w - 95, ty + 6), "⚡ Quick Adjust", fill=(71, 85, 105), font=sans_bold)
 
     # Table Rows
     ty += 28
@@ -274,7 +268,8 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
     foot_y = height - 32
     draw.rectangle([0, foot_y, width, height], fill=(241, 245, 249))
     draw.line([(0, foot_y), (width, foot_y)], fill=(226, 232, 240), width=1)
-    draw.text((24, foot_y + 8), "System Status: Online | Database Ready", fill=(71, 85, 105), font=small_font)
+    draw.text((24, foot_y + 8), "Database Connected | Ready", fill=(71, 85, 105), font=small_font)
+    draw.text((width - 340, foot_y + 8), "Store Inventory System v1.0 • Enterprise Edition", fill=(100, 116, 139), font=sans_bold)
     draw.text((width - 340, foot_y + 8), "Store Inventory System v1.0 • Enterprise Edition", fill=(100, 116, 139), font=sans_bold)
 
     # Optional Alert Dialog Overlay
