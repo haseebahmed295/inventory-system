@@ -99,3 +99,59 @@
 .combo-box:focused {
     -fx-border-color: #2563EB;
 }
+
+/* Modern MenuBar Styling */
+.menu-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 2 16;
+}
+
+.menu-bar .menu-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4 10;
+}
+
+.menu-bar .menu-button:hover, .menu-bar .menu-button:showing {
+    -fx-background-color: #F1F5F9;
+    -fx-background-radius: 4;
+}
+
+.menu-bar .menu-button .label {
+    -fx-text-fill: #334155;
+    -fx-font-weight: 600;
+    -fx-font-size: 12px;
+}
+
+.context-menu {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 4;
+    -fx-effect: dropshadow(three-pass-box, rgba(15,23,42,0.12), 10, 0, 0, 4);
+}
+
+.menu-item {
+    -fx-padding: 6 12;
+    -fx-background-radius: 4;
+}
+
+.menu-item:hover, .menu-item:focused {
+    -fx-background-color: #EFF6FF;
+}
+
+.menu-item:hover .label, .menu-item:focused .label {
+    -fx-text-fill: #1E40AF;
+}
+
+.menu-item .label {
+    -fx-text-fill: #1E293B;
+    -fx-font-size: 12px;
+}
+
+.separator:horizontal .line {
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1 0 0 0;
+}
