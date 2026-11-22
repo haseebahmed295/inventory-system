@@ -1,0 +1,101 @@
+/* ==============================================================================
+   Store Inventory Management System - Unified Modern Light Theme CSS
+   ============================================================================== */
+
+.root {
+    -fx-font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    -fx-background-color: #F8FAFC;
+    -fx-text-fill: #0F172A;
+}
+
+/* Scrollbars */
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.scroll-bar .thumb {
+    -fx-background-color: #CBD5E1;
+    -fx-background-radius: 4;
+}
+.scroll-bar .thumb:hover {
+    -fx-background-color: #94A3B8;
+}
+
+/* Modern Clean TableView */
+.table-view {
+    -fx-background-color: #FFFFFF;
+    -fx-table-cell-border-color: #F1F5F9;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 38px;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #475569;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #F1F5F9;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 40px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #FAFAFA;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #F1F5F9;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #EFF6FF;
+    -fx-background-insets: 0;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: #1E40AF;
+}
+
+/* Inputs */
+.text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 10;
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #0F172A;
+}
+
+.text-field:focused {
+    -fx-border-color: #2563EB;
+    -fx-effect: dropshadow(three-pass-box, rgba(37,99,235,0.12), 4, 0, 0, 1);
+}
+
+.combo-box {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 3 6;
+    -fx-font-size: 12px;
+}
+
+.combo-box:focused {
+    -fx-border-color: #2563EB;
+}

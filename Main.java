@@ -7,6 +7,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -14,12 +16,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.List;
 
 /**
  * Standard enterprise JavaFX Graphical User Interface for the Store Inventory Management System.
- * Built with a modern, primary-color-driven UI theme, clean visual hierarchy, reactive KPI metrics,
- * full input validation, and interactive catalog controls.
+ * Features a unified, modern light theme driven by a cohesive primary color palette,
+ * seamless KPI statistic cards, custom-styled segmented view switcher, and full input validations.
  *
  * @author Haseeb Ahmad
  * @version 1.0
@@ -28,7 +31,6 @@ public class Main extends Application {
 
     /** Primary Brand Accent Color (#2563EB - Royal Blue). */
     private static final String PRIMARY_COLOR = "#2563EB";
-    private static final String PRIMARY_HOVER = "#1D4ED8";
     private static final String SURFACE_BG = "#F8FAFC";
     private static final String CARD_BG = "#FFFFFF";
     private static final String BORDER_COLOR = "#E2E8F0";
@@ -44,6 +46,21 @@ public class Main extends Application {
     /** Primary interactive table displaying inventory records. */
     private TableView<InventoryItem> inventoryTable;
 
+    /** Container hosting either the TableView or the CSV Area. */
+    private StackPane displayContentArea;
+
+    /** Raw text area displaying CSV data export. */
+    private TextArea rawDataArea;
+
+    /** Container for CSV view including action toolbar. */
+    private VBox csvViewContainer;
+
+    /** Segmented toggle button for Table view. */
+    private Button tableSegmentBtn;
+
+    /** Segmented toggle button for CSV view. */
+    private Button csvSegmentBtn;
+
     /** Text input field for the item's commercial name. */
     private TextField nameField;
 
@@ -55,9 +72,6 @@ public class Main extends Application {
 
     /** Real-time search query text field for instant table filtering. */
     private TextField searchField;
-
-    /** Raw text area displaying CSV data export. */
-    private TextArea rawDataArea;
 
     /** KPI display label for total inventory item count. */
     private Label totalKpiLabel;
@@ -89,18 +103,17 @@ public class Main extends Application {
         inventoryManager = new InventoryManager();
         observableItemList = FXCollections.observableArrayList();
 
-        // Root BorderPane
+        // Root BorderPane with unified light theme
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: " + SURFACE_BG + ";");
 
-        // Top Header and KPI Dashboard (Modern Primary-Driven Design)
-        VBox topContainer = new VBox(14);
-        topContainer.setPadding(new Insets(16, 24, 16, 24));
-        topContainer.setStyle("-fx-background-color: #0F172A; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 10, 0, 0, 3);");
+        // Top Container: Unified White Header & KPI Metric Strip
+        VBox topContainer = new VBox(0);
+        topContainer.setStyle("-fx-background-color: " + CARD_BG + "; -fx-border-color: " + BORDER_COLOR + "; -fx-border-width: 0 0 1 0;");
         topContainer.getChildren().addAll(createHeaderBanner(), createKpiDashboard());
         root.setTop(topContainer);
 
-        // Center Content SplitPane (Form on Left, Inventory Table on Right)
+        // Center Content SplitPane (Form on Left, Inventory Catalog on Right)
         HBox centerContent = new HBox(18);
         centerContent.setPadding(new Insets(18, 24, 18, 24));
         VBox.setVgrow(centerContent, Priority.ALWAYS);
@@ -119,11 +132,21 @@ public class Main extends Application {
         root.setBottom(createFooterBar());
 
         // Configure Scene and Window
-        Scene scene = new Scene(root, 1120, 740);
+        Scene scene = new Scene(root, 1140, 750);
+
+        // Load external stylesheet if present
+        try {
+            File cssFile = new File("style.css");
+            if (cssFile.exists()) {
+                scene.getStylesheets().add(cssFile.toURI().toURL().toExternalForm());
+            }
+        } catch (Exception ignored) {
+        }
+
         primaryStage.setTitle("Store Inventory Management System");
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(980);
-        primaryStage.setMinHeight(640);
+        primaryStage.setMinWidth(1000);
+        primaryStage.setMinHeight(650);
         primaryStage.show();
 
         // Load initial sample items for seamless demonstration
@@ -131,61 +154,69 @@ public class Main extends Application {
     }
 
     /**
-     * Constructs the top title banner with standard enterprise branding.
+     * Constructs the top title banner with a unified modern light theme.
      *
-     * @return HBox container with formatted labels
+     * @return HBox container with formatted brand and status elements
      */
     private HBox createHeaderBanner() {
         HBox header = new HBox(16);
         header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(14, 24, 12, 24));
+        header.setStyle("-fx-background-color: " + CARD_BG + ";");
 
-        VBox titleBox = new VBox(3);
+        // Brand Icon / Emblem
+        Label logoIcon = new Label("📦");
+        logoIcon.setFont(Font.font("Segoe UI Emoji", 24));
+
+        VBox titleBox = new VBox(2);
         Label titleLabel = new Label("Store Inventory Management System");
-        titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 21));
-        titleLabel.setTextFill(Color.WHITE);
+        titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 19));
+        titleLabel.setTextFill(Color.web(TEXT_MAIN));
 
         Label subLabel = new Label("Real-time stock tracking, catalog control, and inventory analytics");
         subLabel.setFont(Font.font("Segoe UI", 12));
-        subLabel.setTextFill(Color.web("#94A3B8"));
+        subLabel.setTextFill(Color.web(TEXT_MUTED));
         titleBox.getChildren().addAll(titleLabel, subLabel);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Clean System Online Badge
-        HBox statusPill = new HBox(8);
+        // Clean System Online Badge (Light Theme Green Pill)
+        HBox statusPill = new HBox(7);
         statusPill.setAlignment(Pos.CENTER);
-        statusPill.setPadding(new Insets(6, 14, 6, 14));
-        statusPill.setStyle("-fx-background-color: #1E293B; -fx-background-radius: 20; -fx-border-color: #334155; -fx-border-radius: 20;");
+        statusPill.setPadding(new Insets(5, 12, 5, 12));
+        statusPill.setStyle("-fx-background-color: #ECFDF5; -fx-background-radius: 20; -fx-border-color: #A7F3D0; -fx-border-radius: 20;");
 
-        Circle dot = new Circle(4, Color.web("#10B981"));
+        Circle dot = new Circle(3.5, Color.web("#059669"));
         Label pillText = new Label("System Online");
-        pillText.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 11.5));
-        pillText.setTextFill(Color.web("#E2E8F0"));
+        pillText.setFont(Font.font("Segoe UI", FontWeight.BOLD, 11));
+        pillText.setTextFill(Color.web("#059669"));
         statusPill.getChildren().addAll(dot, pillText);
 
-        header.getChildren().addAll(titleBox, spacer, statusPill);
+        header.getChildren().addAll(logoIcon, titleBox, spacer, statusPill);
         return header;
     }
 
     /**
-     * Creates the KPI dashboard row with cohesive, theme-driven metric cards.
+     * Creates the KPI dashboard row with cohesive, light-themed metric cards.
      *
      * @return HBox with 4 responsive statistic cards
      */
     private HBox createKpiDashboard() {
         HBox kpiBox = new HBox(14);
         kpiBox.setAlignment(Pos.CENTER);
+        kpiBox.setPadding(new Insets(0, 24, 16, 24));
+        kpiBox.setStyle("-fx-background-color: " + CARD_BG + ";");
 
         totalKpiLabel = new Label("0");
         inStockKpiLabel = new Label("0");
         lowStockKpiLabel = new Label("0");
         outOfStockKpiLabel = new Label("0");
 
-        VBox totalCard = createKpiCard("TOTAL ITEMS", totalKpiLabel, PRIMARY_COLOR);
-        VBox inStockCard = createKpiCard("IN STOCK", inStockKpiLabel, "#10B981");
-        VBox lowStockCard = createKpiCard("LOW STOCK", lowStockKpiLabel, "#F59E0B");
-        VBox outOfStockCard = createKpiCard("OUT OF STOCK", outOfStockKpiLabel, "#EF4444");
+        VBox totalCard = createKpiCard("TOTAL INVENTORY", totalKpiLabel, PRIMARY_COLOR, "#EFF6FF");
+        VBox inStockCard = createKpiCard("IN STOCK", inStockKpiLabel, "#10B981", "#ECFDF5");
+        VBox lowStockCard = createKpiCard("LOW STOCK", lowStockKpiLabel, "#F59E0B", "#FFFBEB");
+        VBox outOfStockCard = createKpiCard("OUT OF STOCK", outOfStockKpiLabel, "#EF4444", "#FEF2F2");
 
         HBox.setHgrow(totalCard, Priority.ALWAYS);
         HBox.setHgrow(inStockCard, Priority.ALWAYS);
@@ -197,36 +228,40 @@ public class Main extends Application {
     }
 
     /**
-     * Helper to render an individual metric card adhering to the unified theme.
+     * Helper to render an individual light-themed metric card with a colored accent indicator.
      *
      * @param title      card category header
      * @param valueLabel metric counter label
      * @param accentHex  accent brand color hex code
+     * @param iconBgHex  icon pill background hex code
      * @return configured VBox container
      */
-    private VBox createKpiCard(String title, Label valueLabel, String accentHex) {
+    private VBox createKpiCard(String title, Label valueLabel, String accentHex, String iconBgHex) {
         VBox card = new VBox(4);
         card.setAlignment(Pos.CENTER_LEFT);
         card.setPadding(new Insets(10, 16, 10, 16));
         card.setStyle(String.format(
-                "-fx-background-color: #1E293B; " +
+                "-fx-background-color: #FFFFFF; " +
                 "-fx-background-radius: 8; " +
-                "-fx-border-color: #334155; " +
+                "-fx-border-color: %s; " +
                 "-fx-border-radius: 8; " +
-                "-fx-border-width: 1;"
+                "-fx-border-width: 1; " +
+                "-fx-border-left-color: %s; " +
+                "-fx-border-left-width: 3.5;",
+                BORDER_COLOR, accentHex
         ));
 
-        HBox titleRow = new HBox(8);
+        HBox titleRow = new HBox(7);
         titleRow.setAlignment(Pos.CENTER_LEFT);
         Circle indicator = new Circle(3.5, Color.web(accentHex));
 
         Label titleLbl = new Label(title);
-        titleLbl.setFont(Font.font("Segoe UI", FontWeight.BOLD, 11));
-        titleLbl.setTextFill(Color.web("#94A3B8"));
+        titleLbl.setFont(Font.font("Segoe UI", FontWeight.BOLD, 10.5));
+        titleLbl.setTextFill(Color.web(TEXT_MUTED));
         titleRow.getChildren().addAll(indicator, titleLbl);
 
         valueLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 22));
-        valueLabel.setTextFill(Color.WHITE);
+        valueLabel.setTextFill(Color.web(TEXT_MAIN));
 
         card.getChildren().addAll(titleRow, valueLabel);
         return card;
@@ -245,7 +280,7 @@ public class Main extends Application {
                 "-fx-background-radius: 8; " +
                 "-fx-border-color: %s; " +
                 "-fx-border-radius: 8; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 8, 0, 0, 2);",
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.02), 6, 0, 0, 1);",
                 CARD_BG, BORDER_COLOR
         ));
 
@@ -289,9 +324,9 @@ public class Main extends Application {
         feedbackBanner.setWrapText(true);
         feedbackBanner.setMaxWidth(Double.MAX_VALUE);
         feedbackBanner.setPadding(new Insets(8, 12, 8, 12));
-        feedbackBanner.setStyle("-fx-background-color: #F1F5F9; -fx-text-fill: #475569; -fx-background-radius: 6; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-font-size: 11.5px;");
+        feedbackBanner.setStyle("-fx-background-color: #F8FAFC; -fx-text-fill: #475569; -fx-background-radius: 6; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-font-size: 11.5px;");
 
-        // Primary Color Driven Buttons Grid
+        // Primary Color Driven Action Buttons
         Button addBtn = new Button("Add Item");
         addBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12.5px; -fx-padding: 9 14; -fx-background-radius: 6; -fx-cursor: hand;",
@@ -369,9 +404,9 @@ public class Main extends Application {
     }
 
     /**
-     * Constructs the right-hand panel hosting search controls and the interactive TableView.
+     * Constructs the right-hand panel hosting search controls, custom-styled view switcher, and the TableView.
      *
-     * @return VBox container hosting table and search tools
+     * @return VBox container hosting table, search tools, and view switcher
      */
     private VBox createTablePanel() {
         VBox tableContainer = new VBox(13);
@@ -381,29 +416,45 @@ public class Main extends Application {
                 "-fx-background-radius: 8; " +
                 "-fx-border-color: %s; " +
                 "-fx-border-radius: 8; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 8, 0, 0, 2);",
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.02), 6, 0, 0, 1);",
                 CARD_BG, BORDER_COLOR
         ));
 
-        // Top Search Bar
-        HBox topBar = new HBox(10);
+        // Top Toolbar: Search + Modern Styled Segmented View Switcher
+        HBox topBar = new HBox(12);
         topBar.setAlignment(Pos.CENTER_LEFT);
 
-        Label searchLbl = new Label("Search Catalog:");
+        Label searchLbl = new Label("Search:");
         searchLbl.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 12));
         searchLbl.setTextFill(Color.web("#334155"));
 
         searchField = new TextField();
         searchField.setPromptText("Filter items by name in real-time...");
-        searchField.setStyle("-fx-padding: 8 10; -fx-font-size: 12.5px; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-background-color: #FFFFFF;");
+        searchField.setStyle("-fx-padding: 7 10; -fx-font-size: 12.5px; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-background-color: #FFFFFF;");
         HBox.setHgrow(searchField, Priority.ALWAYS);
         searchField.textProperty().addListener((obs, oldVal, newVal) -> filterTable(newVal));
 
-        Button resetSearchBtn = new Button("Clear Search");
-        resetSearchBtn.setStyle("-fx-background-color: #F1F5F9; -fx-text-fill: #475569; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-font-size: 12px; -fx-padding: 7 12; -fx-background-radius: 6; -fx-cursor: hand;");
+        Button resetSearchBtn = new Button("Clear");
+        resetSearchBtn.setStyle("-fx-background-color: #F1F5F9; -fx-text-fill: #475569; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-font-size: 11.5px; -fx-padding: 6 12; -fx-background-radius: 6; -fx-cursor: hand;");
         resetSearchBtn.setOnAction(e -> searchField.clear());
 
-        topBar.getChildren().addAll(searchLbl, searchField, resetSearchBtn);
+        // Custom Styled Segmented View Switcher (Connected Pill Design)
+        HBox segmentedControl = new HBox(0);
+        segmentedControl.setAlignment(Pos.CENTER);
+        segmentedControl.setStyle("-fx-background-color: #F1F5F9; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-padding: 2;");
+
+        tableSegmentBtn = new Button("Catalog Table");
+        csvSegmentBtn = new Button("CSV Data");
+
+        applySegmentStyle(tableSegmentBtn, true, true);
+        applySegmentStyle(csvSegmentBtn, false, false);
+
+        tableSegmentBtn.setOnAction(e -> switchView(true));
+        csvSegmentBtn.setOnAction(e -> switchView(false));
+
+        segmentedControl.getChildren().addAll(tableSegmentBtn, csvSegmentBtn);
+
+        topBar.getChildren().addAll(searchLbl, searchField, resetSearchBtn, segmentedControl);
 
         // Build TableView
         inventoryTable = new TableView<>();
@@ -512,31 +563,93 @@ public class Main extends Application {
             }
         });
 
-        // Tabbed Display to switch between Table and CSV Export
-        TabPane tabPane = new TabPane();
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        VBox.setVgrow(tabPane, Priority.ALWAYS);
+        // Build CSV View Container
+        csvViewContainer = new VBox(10);
+        VBox.setVgrow(csvViewContainer, Priority.ALWAYS);
+        csvViewContainer.setVisible(false);
+        csvViewContainer.setManaged(false);
 
-        Tab tableTab = new Tab("Catalog Table", inventoryTable);
+        HBox csvToolbar = new HBox(10);
+        csvToolbar.setAlignment(Pos.CENTER_LEFT);
+        Label csvNote = new Label("Live CSV Export representation:");
+        csvNote.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 12));
+        csvNote.setTextFill(Color.web(TEXT_MUTED));
+
+        Region csvSpacer = new Region();
+        HBox.setHgrow(csvSpacer, Priority.ALWAYS);
+
+        Button copyCsvBtn = new Button("Copy to Clipboard");
+        copyCsvBtn.setStyle("-fx-background-color: #F1F5F9; -fx-text-fill: #334155; -fx-border-color: #CBD5E1; -fx-border-radius: 6; -fx-font-size: 11.5px; -fx-padding: 5 12; -fx-background-radius: 6; -fx-cursor: hand;");
+        copyCsvBtn.setOnAction(e -> {
+            ClipboardContent content = new ClipboardContent();
+            content.putString(rawDataArea.getText());
+            Clipboard.getSystemClipboard().setContent(content);
+            setFeedback("CSV text copied to clipboard.", PRIMARY_COLOR);
+        });
+
+        csvToolbar.getChildren().addAll(csvNote, csvSpacer, copyCsvBtn);
 
         rawDataArea = new TextArea();
         rawDataArea.setEditable(false);
-        rawDataArea.setStyle("-fx-font-family: Consolas; -fx-font-size: 12px;");
-        Tab csvTab = new Tab("CSV Data View", rawDataArea);
+        rawDataArea.setStyle("-fx-font-family: Consolas; -fx-font-size: 12.5px; -fx-background-color: white; -fx-border-color: #CBD5E1; -fx-border-radius: 6;");
+        VBox.setVgrow(rawDataArea, Priority.ALWAYS);
 
-        tabPane.getTabs().addAll(tableTab, csvTab);
-        tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
-            if (newTab == csvTab) {
-                rawDataArea.setText(inventoryManager.toCSV());
-            }
-        });
+        csvViewContainer.getChildren().addAll(csvToolbar, rawDataArea);
 
-        tableContainer.getChildren().addAll(topBar, tabPane);
+        // StackPane hosting either Table or CSV view
+        displayContentArea = new StackPane();
+        VBox.setVgrow(displayContentArea, Priority.ALWAYS);
+        displayContentArea.getChildren().addAll(inventoryTable, csvViewContainer);
+
+        tableContainer.getChildren().addAll(topBar, displayContentArea);
         return tableContainer;
     }
 
     /**
-     * Constructs the bottom status and metadata footer bar.
+     * Switches the active view between the TableView and the CSV Area with animated button styling.
+     *
+     * @param showTable true to show TableView; false to show CSV Area
+     */
+    private void switchView(boolean showTable) {
+        inventoryTable.setVisible(showTable);
+        inventoryTable.setManaged(showTable);
+
+        csvViewContainer.setVisible(!showTable);
+        csvViewContainer.setManaged(!showTable);
+
+        applySegmentStyle(tableSegmentBtn, showTable, true);
+        applySegmentStyle(csvSegmentBtn, !showTable, false);
+
+        if (!showTable && rawDataArea != null) {
+            rawDataArea.setText(inventoryManager.toCSV());
+            setFeedback("Viewing live CSV export data.", PRIMARY_COLOR);
+        }
+    }
+
+    /**
+     * Applies segmented button styling based on selection state.
+     *
+     * @param btn       button target
+     * @param isSelected whether this segment is active
+     * @param isLeft    true if left pill segment; false if right
+     */
+    private void applySegmentStyle(Button btn, boolean isSelected, boolean isLeft) {
+        String radius = isLeft ? "4 0 0 4" : "0 4 4 0";
+        if (isSelected) {
+            btn.setStyle(String.format(
+                    "-fx-background-color: %s; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11.5px; -fx-padding: 5 12; -fx-background-radius: %s; -fx-cursor: hand;",
+                    PRIMARY_COLOR, radius
+            ));
+        } else {
+            btn.setStyle(String.format(
+                    "-fx-background-color: transparent; -fx-text-fill: #475569; -fx-font-size: 11.5px; -fx-padding: 5 12; -fx-background-radius: %s; -fx-cursor: hand;",
+                    radius
+            ));
+        }
+    }
+
+    /**
+     * Constructs the bottom status and metadata footer bar in clean light styling.
      *
      * @return HBox containing version, runtime, and status notes
      */
@@ -544,18 +657,18 @@ public class Main extends Application {
         HBox footer = new HBox(20);
         footer.setPadding(new Insets(8, 24, 8, 24));
         footer.setAlignment(Pos.CENTER_LEFT);
-        footer.setStyle("-fx-background-color: #F1F5F9; -fx-border-color: #E2E8F0; -fx-border-width: 1 0 0 0;");
+        footer.setStyle("-fx-background-color: " + CARD_BG + "; -fx-border-color: " + BORDER_COLOR + "; -fx-border-width: 1 0 0 0;");
 
         Label statusInfo = new Label("System Status: Online | Database Ready");
         statusInfo.setFont(Font.font("Segoe UI", 11.5));
-        statusInfo.setTextFill(Color.web("#475569"));
+        statusInfo.setTextFill(Color.web(TEXT_MUTED));
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Label systemInfo = new Label("Store Inventory System v1.0 • Enterprise Edition");
         systemInfo.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 11.5));
-        systemInfo.setTextFill(Color.web("#64748B"));
+        systemInfo.setTextFill(Color.web(TEXT_MUTED));
 
         footer.getChildren().addAll(statusInfo, spacer, systemInfo);
         return footer;

@@ -86,28 +86,29 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
     img = Image.new('RGB', (width, height), (248, 250, 252))
     draw = ImageDraw.Draw(img)
 
-    # Window Title Bar (Windows 11 dark frame)
-    draw.rectangle([0, 0, width, 32], fill=(15, 23, 42))
-    draw.text((14, 7), "Store Inventory Management System", fill=(241, 245, 249), font=small_font)
-    draw.ellipse([width - 54, 16 - 5, width - 44, 16 + 5], fill=(71, 85, 105))
-    draw.ellipse([width - 36, 16 - 5, width - 26, 16 + 5], fill=(71, 85, 105))
+    # Window Title Bar (Windows 11 light frame)
+    draw.rectangle([0, 0, width, 32], fill=(241, 245, 249))
+    draw.line([(0, 32), (width, 32)], fill=(226, 232, 240), width=1)
+    draw.text((14, 7), "Store Inventory Management System", fill=(51, 65, 85), font=small_font)
+    draw.ellipse([width - 54, 16 - 5, width - 44, 16 + 5], fill=(203, 213, 225))
+    draw.ellipse([width - 36, 16 - 5, width - 26, 16 + 5], fill=(203, 213, 225))
     draw.ellipse([width - 18, 16 - 5, width - 8, 16 + 5], fill=(239, 68, 68))
 
-    # Header Section
-    draw.rectangle([0, 32, width, 126], fill=(15, 23, 42))
-    draw.text((24, 42), "Store Inventory Management System", fill=(255, 255, 255), font=title_font)
-    draw.text((24, 68), "Real-time stock tracking, catalog control, and inventory analytics", fill=(148, 163, 184), font=small_font)
+    # Header Section (Clean White Header)
+    draw.rectangle([0, 32, width, 84], fill=(255, 255, 255))
+    draw.text((24, 40), "📦 Store Inventory Management System", fill=(15, 23, 42), font=title_font)
+    draw.text((58, 64), "Real-time stock tracking, catalog control, and inventory analytics", fill=(100, 116, 139), font=small_font)
 
-    # Header Badge (System Online Pill)
-    draw_rounded_rect(draw, [width - 150, 48, width - 24, 74], fill=(30, 41, 59), outline=(51, 65, 85), radius=12)
-    draw.ellipse([width - 138, 61 - 3, width - 132, 61 + 3], fill=(16, 185, 129))
-    draw.text((width - 124, 54), "System Online", fill=(226, 232, 240), font=small_font)
+    # Header Badge (System Online Light Green Pill)
+    draw_rounded_rect(draw, [width - 146, 46, width - 24, 70], fill=(236, 253, 245), outline=(167, 243, 208), radius=12)
+    draw.ellipse([width - 134, 58 - 3, width - 128, 58 + 3], fill=(5, 150, 105))
+    draw.text((width - 120, 52), "System Online", fill=(5, 150, 105), font=small_font)
 
-    # KPI Row (Unified Dark Slate Theme)
-    kpi_y = 86
+    # KPI Row (Seamless Light Theme Cards with Left Accent Borders)
+    kpi_y = 92
     kpi_w = (width - 48 - 36) // 4
     kpi_configs = [
-        ("TOTAL ITEMS", str(kpi_counts['total']), (37, 99, 235)),
+        ("TOTAL INVENTORY", str(kpi_counts['total']), (37, 99, 235)),
         ("IN STOCK", str(kpi_counts['in_stock']), (16, 185, 129)),
         ("LOW STOCK", str(kpi_counts['low_stock']), (245, 158, 11)),
         ("OUT OF STOCK", str(kpi_counts['out_stock']), (239, 68, 68))
@@ -115,15 +116,23 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
 
     for idx, (ktitle, kval, accent_col) in enumerate(kpi_configs):
         kx = 24 + idx * (kpi_w + 12)
-        draw_rounded_rect(draw, [kx, kpi_y, kx + kpi_w, kpi_y + 36], fill=(30, 41, 59), outline=(51, 65, 85), width=1, radius=6)
-        draw.ellipse([kx + 10, kpi_y + 11 - 3, kx + 16, kpi_y + 11 + 3], fill=accent_col)
-        draw.text((kx + 22, kpi_y + 4), ktitle, fill=(148, 163, 184), font=small_font)
-        draw.text((kx + kpi_w - 32, kpi_y + 8), kval, fill=(255, 255, 255), font=sans_bold)
+        # White card with subtle border
+        draw_rounded_rect(draw, [kx, kpi_y, kx + kpi_w, kpi_y + 44], fill=(255, 255, 255), outline=(226, 232, 240), width=1, radius=6)
+        # Left accent stripe
+        draw.rectangle([kx, kpi_y, kx + 4, kpi_y + 44], fill=accent_col)
+        # Dot and label
+        draw.ellipse([kx + 12, kpi_y + 12 - 3, kx + 18, kpi_y + 12 + 3], fill=accent_col)
+        draw.text((kx + 24, kpi_y + 6), ktitle, fill=(100, 116, 139), font=small_font)
+        # Bold Value
+        draw.text((kx + 24, kpi_y + 20), kval, fill=(15, 23, 42), font=sans_bold)
+
+    # Divider below top strip
+    draw.line([(0, 144), (width, 144)], fill=(226, 232, 240), width=1)
 
     # Main Split Body
-    body_y = 138
+    body_y = 152
     form_w = 330
-    form_h = 500
+    form_h = 490
 
     # Left Form Card
     draw_rounded_rect(draw, [24, body_y, 24 + form_w, body_y + form_h], fill=(255, 255, 255), outline=(226, 232, 240), radius=8)
@@ -192,13 +201,21 @@ def render_gui_screenshot(filename, kpi_counts, items_data, form_values, alert_d
     tbl_w = width - tbl_x - 24
     draw_rounded_rect(draw, [tbl_x, body_y, tbl_x + tbl_w, body_y + form_h], fill=(255, 255, 255), outline=(226, 232, 240), radius=8)
 
-    # Search Bar
-    draw.text((tbl_x + 16, body_y + 16), "Search Catalog:", fill=(51, 65, 85), font=sans_bold)
-    draw_rounded_rect(draw, [tbl_x + 120, body_y + 10, tbl_x + tbl_w - 96, body_y + 36], fill=(255, 255, 255), outline=(203, 213, 225), radius=6)
-    draw.text((tbl_x + 128, body_y + 15), search_query if search_query else "Filter items by name in real-time...", fill=(15, 23, 42) if search_query else (148, 163, 184), font=small_font)
+    # Search Bar & Segmented View Switcher
+    draw.text((tbl_x + 16, body_y + 16), "Search:", fill=(51, 65, 85), font=sans_bold)
+    draw_rounded_rect(draw, [tbl_x + 68, body_y + 10, tbl_x + tbl_w - 240, body_y + 36], fill=(255, 255, 255), outline=(203, 213, 225), radius=6)
+    draw.text((tbl_x + 76, body_y + 15), search_query if search_query else "Filter items by name in real-time...", fill=(15, 23, 42) if search_query else (148, 163, 184), font=small_font)
 
-    draw_rounded_rect(draw, [tbl_x + tbl_w - 86, body_y + 10, tbl_x + tbl_w - 16, body_y + 36], fill=(241, 245, 249), outline=(203, 213, 225), radius=6)
-    draw.text((tbl_x + tbl_w - 74, body_y + 15), "Clear", fill=(71, 85, 105), font=small_font)
+    draw_rounded_rect(draw, [tbl_x + tbl_w - 232, body_y + 10, tbl_x + tbl_w - 180, body_y + 36], fill=(241, 245, 249), outline=(203, 213, 225), radius=6)
+    draw.text((tbl_x + tbl_w - 218, body_y + 15), "Clear", fill=(71, 85, 105), font=small_font)
+
+    # Segmented Toggle Pill [ Catalog Table | CSV Data ]
+    seg_x = tbl_x + tbl_w - 170
+    draw_rounded_rect(draw, [seg_x, body_y + 10, tbl_x + tbl_w - 16, body_y + 36], fill=(241, 245, 249), outline=(203, 213, 225), radius=6)
+    # Active Table Segment
+    draw_rounded_rect(draw, [seg_x + 2, body_y + 12, seg_x + 84, body_y + 34], fill=(37, 99, 235), radius=4)
+    draw.text((seg_x + 8, body_y + 15), "Catalog Table", fill=(255, 255, 255), font=small_font)
+    draw.text((seg_x + 94, body_y + 15), "CSV Data", fill=(71, 85, 105), font=small_font)
 
     # Table Header
     ty = body_y + 48
